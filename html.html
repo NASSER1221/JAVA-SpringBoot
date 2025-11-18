@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Course List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f3f3f3;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+        }
+        th {
+            background: #0078ff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        #refreshBtn {
+            padding: 10px 20px;
+            background: #0078ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        #refreshBtn:hover {
+            background: #005fcc;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Active Courses</h1>
+
+<button id="refreshBtn">Refresh</button>
+
+<table id="courseTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Date Added</th>
+            <th>Starting Date</th>
+            <th>Duration</th>
+            <th>Entries</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    async function loadCourses() {
+        const response = await fetch("http://localhost:8080/getAll");
+        const data = await response.json();
+
+        const tableBody = document.querySelector("#courseTable tbody");
+        tableBody.innerHTML = ""; // clear table
+
+        data.forEach(course => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${course.id}</td>
+                <td>${course.name}</td>
+                <td>${course.date}</td>
+                <td>${course.startingDate}</td>
+                <td>${course.duration}</td>
+                <td>${course.entries}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    document.getElementById("refreshBtn").addEventListener("click", loadCourses);
+
+    // auto-load on page open
+    loadCourses();
+
+    // auto refresh every 5 seconds (optional)
+    setInterval(loadCourses, 5000);
+</script>
+
+</body>
+</html>

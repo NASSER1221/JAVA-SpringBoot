@@ -2,56 +2,78 @@ package com.example.demo;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
+import java.time.LocalDate;
+import java.util.*;
+@CrossOrigin(origins = "*")
 @RestController
 public class Crud {
 
-    HashMap<Integer,String> coursesList=new HashMap<>();
+    List<Course> courses = new ArrayList<>();
 
     @PostMapping("/add")
-    public String add(@RequestParam String name){
+    public String add(@RequestBody Course course) {
 
-        coursesList.put(coursesList.size()+1,name);
+        courses.add(course);
+        course.setId(courses.size()+1);
+        course.setDate(LocalDate.now());
+        course.setActive(true);
 
         return "Course Added";
 
     }
 
     @GetMapping("/getAll")
-    public String getAll(){
-        return coursesList.toString();
+    public List<Course> getAll() {
+        List<Course> activeCourses = new ArrayList<>();
+        for (Course course : courses) {
+            if (course.active) {
+                activeCourses.add(course);
+            }
+        }
+        return activeCourses;
     }
 
-    @GetMapping ("/get/{id}")
-    public String courseGetById(@PathVariable Integer id){
+    @GetMapping("/get")
+    public Object courseGetById(@RequestParam Integer id) {
 
-        if (coursesList.containsKey(id)){
-            System.out.println("Course Found");
-            return coursesList.get(id);
+        for (Course course : courses) {
+
+            if (course.getId().equals(id) && course.active) {
+                return course;
+            }
         }
+
         return "Course was not found";
 
     }
-    @PutMapping("/put/{id}")
-    public String courseUpdate(@PathVariable Integer id,@RequestParam String name){
 
-        if (coursesList.containsKey(id)){
-            coursesList.put(id,name);
-            return "Updated";
+    @PutMapping("/put")
+    public Object courseUpdate(@RequestBody Course course) {
+
+        for (Course courseToUpdate : courses) {
+            if (course.getId().equals(courseToUpdate.getId())) {
+                courseToUpdate.setName(course.getName());
+                courseToUpdate.setDate(LocalDate.now());
+                courseToUpdate.setEntries(course.getEntries());
+                courseToUpdate.setStartingDate(course.getStartingDate());
+                courseToUpdate.setEntries(course.getEntries());
+                courseToUpdate.setDuration(course.getDuration());
+                return "Course updated";
+            }
         }
 
         return "id was not found";
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String courseDelete(@PathVariable Integer id){
+    @DeleteMapping("/delete")
+    public String courseDelete(@RequestParam Integer id) {
 
-        if(coursesList.containsKey(id)){
-            coursesList.remove(id);
-           return "removed";
+        for (Course course : courses) {
+
+            if (course.getId().equals(id)) {
+                course.setActive(false);
+                return "Course deleted";
+            }
         }
 
         return "id was not found";
