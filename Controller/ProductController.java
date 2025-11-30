@@ -2,10 +2,12 @@ package com.example.MySQLIntegration.Controller;
 
 
 
-import com.example.MySQLIntegration.DTO.Product;
+import com.example.MySQLIntegration.Entity.Product;
+import com.example.MySQLIntegration.Service.ProductService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.example.MySQLIntegration.Service.Services;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,7 +17,7 @@ import java.util.UUID;
 public class ProductController {
 
     @Autowired
-private Services services;
+private ProductService services;
 
     @GetMapping("/getAll")
     public List<Product> getAll(){
@@ -23,7 +25,7 @@ private Services services;
     }
 
     @PostMapping("/add")
-    public String addPerson(@RequestBody Product product) throws Exception {
+    public String addProduct(@RequestBody @Valid Product product) throws Exception {
         return services.saveProduct(product);
     }
 
@@ -34,14 +36,14 @@ private Services services;
     }
 
     @PutMapping("/put")
-    public String updateProduct(@RequestBody Product product) throws Exception {
+    public String updateProduct(@RequestBody @Valid Product product) throws Exception {
        return services.updateProduct(product);
     }
 
     @DeleteMapping("/delete")
 
-    public void deleteProduct(@RequestParam UUID id) throws Exception {
-        services.deleteProduct(id);
+    public void deleteProduct(@RequestParam @NotBlank String name) throws Exception {
+        services.deleteProduct(name);
     }
 
 
