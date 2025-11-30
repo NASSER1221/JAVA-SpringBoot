@@ -1,58 +1,58 @@
 package com.example.MySQLIntegration.Service;
 
 
-import com.example.MySQLIntegration.Person;
-import com.example.MySQLIntegration.Repositery.PersonRepo;
+
+import com.example.MySQLIntegration.DTO.Product;
+import com.example.MySQLIntegration.Repositery.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class Services {
 
     @Autowired
-    private PersonRepo personRepo;
+    private ProductRepo productRepo;
 
 
-    public List<Person> getAllPerson() {
-        return personRepo.findAll();
+    public List<Product> getAllProducts() {
+        return productRepo.findAll();
     }
 
-    public Optional<Person> getById(Integer id) throws Exception {
-        Optional<Person> person = personRepo.findById(id);
-        if (person.isPresent() && person.get().getActive() == Boolean.TRUE) {
-            return person;
+    public Optional<Product> getById(UUID id) throws Exception {
+        Optional<Product> product = productRepo.findById(id);
+        if (product.isPresent() && product.get().getActive() == Boolean.TRUE) {
+            return product;
         } else {
             throw new Exception("Bad Request");
         }
     }
 
-    public String savePerson(Person person) throws Exception {
-        if (person != null) {
-            person.setDate(LocalDate.now());
-            person.setActive(Boolean.TRUE);
-            personRepo.save(person);
+    public String saveProduct(Product product) throws Exception {
+        if (product != null) {
+            product.setDate(LocalDate.now());
+            product.setActive(Boolean.TRUE);
+            productRepo.save(product);
             return "Saved";
         } else {
             throw new Exception("Bad Request");
         }
     }
 
-    public String updatePerson(Person person) throws Exception {
+    public String updateProduct(Product product) throws Exception {
 
-        Optional<Person> existingPerson = personRepo.findById(person.getId());
+        Optional<Product> existingProduct = productRepo.findById(product.getId());
 
 
-        if (existingPerson.isPresent() && (existingPerson.get().getActive() == Boolean.TRUE)) {
-            Person updatedPerson = existingPerson.get();
-            updatedPerson.setName(person.getName());
-            updatedPerson.setDate(LocalDate.now());
-            personRepo.save(updatedPerson);
+        if (existingProduct.isPresent() && (existingProduct.get().getActive() == Boolean.TRUE)) {
+            Product updatedProduct = existingProduct.get();
+            updatedProduct.setName(product.getName());
+            updatedProduct.setDate(LocalDate.now());
+            productRepo.save(updatedProduct);
             return "updated";
 
         } else {
@@ -60,13 +60,13 @@ public class Services {
         }
     }
 
-    public void deletePerson(Integer id) throws Exception{
+    public void deleteProduct(UUID id) throws Exception{
 
-        Optional<Person> existingPerson= personRepo.findById(id);
-        if (existingPerson.isPresent()){
-            Person person = existingPerson.get();
-            person.setActive(false);     
-            personRepo.save(person);
+        Optional<Product> existingProduct= productRepo.findById(id);
+        if (existingProduct.isPresent()){
+            Product product = existingProduct.get();
+            product.setActive(false);
+            productRepo.save(product);
             System.out.println("Deleted");
         }
         else {

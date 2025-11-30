@@ -1,9 +1,12 @@
 package com.example.MySQLIntegration.Repositery;
-import com.example.MySQLIntegration.Person;
+
+import com.example.MySQLIntegration.DTO.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
-public interface PersonRepo extends JpaRepository<Person,Integer> {
+public interface ProductRepo extends JpaRepository<Product, UUID> {
 
 }
